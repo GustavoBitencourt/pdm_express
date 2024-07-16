@@ -4,7 +4,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home';
 import SignIn from '../screens/SignIn';
+import SignUp from '../screens/SignUp';
 import Preload from '../screens/Preload';
+import ForgotPassWord from '../screens/ForgotPassword';
 import {StatusBar, TouchableOpacity, Text, View} from 'react-native';
 import {Icon, useTheme} from '@rneui/themed';
 import {COLORS} from '../assets/colors';
@@ -62,6 +64,8 @@ function AuthStack() {
       }}>
       <Stack.Screen name="Preload" component={Preload} />
       <Stack.Screen name="SignIn" component={SignIn} />
+      <Stack.Screen component={SignUp} name="SignUp" />
+      <Stack.Screen component={ForgotPassWord} name="ForgotPassWord" />
     </Stack.Navigator>
   );
 }
