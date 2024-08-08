@@ -3,6 +3,7 @@ import Navigator from './Navigator';
 import {ThemeProvider, createTheme} from '@rneui/themed';
 import {COLORS} from '../assets/colors';
 import {AuthUserProvider} from '../context/AuthUserProvider';
+import {ProductsProvider} from '../context/ProductsProvider';
 
 const theme = createTheme({
   lightColors: {
@@ -80,7 +81,9 @@ const Providers = () => {
   return (
     <ThemeProvider theme={theme}>
       <AuthUserProvider>
-        <Navigator />
+        <ProductsProvider>
+          <Navigator />
+        </ProductsProvider>
       </AuthUserProvider>
     </ThemeProvider>
   );

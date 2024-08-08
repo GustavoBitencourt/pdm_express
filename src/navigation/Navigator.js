@@ -7,15 +7,16 @@ import SignIn from '../screens/SignIn';
 import SignUp from '../screens/SignUp';
 import Preload from '../screens/Preload';
 import ForgotPassWord from '../screens/ForgotPassword';
-import {StatusBar, TouchableOpacity, Text, View} from 'react-native';
+import ProductsList from '../screens/ProductsList';
+import AddProductForm from '../screens/ProductsAdd';
+import EditProductForm from '../screens/ProductsUpdate';
+import {StatusBar} from 'react-native';
 import {Icon, useTheme} from '@rneui/themed';
-import {COLORS} from '../assets/colors';
 
 const Stack = createNativeStackNavigator();
-
 const Tab = createBottomTabNavigator();
 
-function AppStack({navigation}) {
+function AppStack() {
   const {theme} = useTheme();
   return (
     <Tab.Navigator
@@ -23,31 +24,48 @@ function AppStack({navigation}) {
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen
+      <Tab.Screen
         name="Home"
         component={Home}
         options={{
-          tabBarLabel: 'Login',
-          tabBarButton: () => (
-            <TouchableOpacity
-              style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-              onPress={() =>
-                navigation.navigate('AuthStack', {screen: 'SignIn'})
-              }>
-              <View style={{flexDirection: 'column', alignItems: 'center'}}>
-                <Icon
-                  type="ionicon"
-                  name="log-in-outline"
-                  color={
-                    theme.mode === 'light'
-                      ? theme.colors.blackGray
-                      : theme.colors.black
-                  }
-                  size={20}
-                />
-                <Text style={{color: COLORS.blackGray}}>Login</Text>
-              </View>
-            </TouchableOpacity>
+          tabBarLabel: 'Home',
+          tabBarIcon: () => (
+            <Icon
+              type="ionicon"
+              name="home-outline"
+              color={theme.colors.blackGray}
+              size={20}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ProductsList"
+        component={ProductsList}
+        options={{
+          tabBarLabel: 'Listar Produtos',
+          tabBarIcon: () => (
+            <Icon
+              type="ionicon"
+              name="list-outline"
+              color={theme.colors.blackGray}
+              size={20}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="AddProduct"
+        component={AddProductForm}
+        options={{
+          tabBarLabel: 'Adicionar Produto',
+          tabBarIcon: () => (
+            <Icon
+              type="ionicon"
+              name="add"
+              color={theme.colors.blackGray}
+              size={20}
+            />
           ),
         }}
       />
@@ -64,8 +82,8 @@ function AuthStack() {
       }}>
       <Stack.Screen name="Preload" component={Preload} />
       <Stack.Screen name="SignIn" component={SignIn} />
-      <Stack.Screen component={SignUp} name="SignUp" />
-      <Stack.Screen component={ForgotPassWord} name="ForgotPassWord" />
+      <Stack.Screen name="SignUp" component={SignUp} />
+      <Stack.Screen name="ForgotPassWord" component={ForgotPassWord} />
     </Stack.Navigator>
   );
 }
@@ -82,8 +100,11 @@ const Navigator = () => {
         }}>
         <Stack.Screen name="AuthStack" component={AuthStack} />
         <Stack.Screen name="AppStack" component={AppStack} />
+        <Stack.Screen name="EditProduct" component={EditProductForm} />
+        <Stack.Screen name="AddProduct" component={AddProductForm} />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
+
 export default Navigator;
