@@ -2,6 +2,7 @@ import React from 'react';
 import Navigator from './Navigator';
 import {ThemeProvider, createTheme} from '@rneui/themed';
 import {COLORS} from '../assets/colors';
+import {ApiProvider} from '../context/ApiProvider';
 import {AuthUserProvider} from '../context/AuthUserProvider';
 import {ProductsProvider} from '../context/ProductsProvider';
 
@@ -81,9 +82,11 @@ const Providers = () => {
   return (
     <ThemeProvider theme={theme}>
       <AuthUserProvider>
-        <ProductsProvider>
-          <Navigator />
-        </ProductsProvider>
+        <ApiProvider>
+          <ProductsProvider>
+            <Navigator />
+          </ProductsProvider>
+        </ApiProvider>
       </AuthUserProvider>
     </ThemeProvider>
   );

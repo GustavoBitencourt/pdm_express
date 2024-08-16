@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {
   View,
   Text,
@@ -16,12 +16,16 @@ import {Icon} from '@rneui/themed';
 const windowWidth = Dimensions.get('window').width;
 
 const ProductsList = ({navigation}) => {
-  const {products, loading, error, removeProduct} = useContext(ProductsContext);
+  const {products, loading, error, removeProduct, fetchProducts} =
+    useContext(ProductsContext);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handleRemoveProduct = async id => {
     try {
       await removeProduct(id);
-      Alert.alert('Produto removido com sucesso!');
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível remover o produto.');
     }

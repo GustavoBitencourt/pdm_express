@@ -13,7 +13,7 @@ const EditProductForm = ({route, navigation}) => {
     const product = products.find(p => p.id === productId);
     if (product) {
       setNome(product.Nome);
-      setValor(product.Valor);
+      setValor(product.Valor.toString());
     }
   }, [productId, products]);
 
@@ -24,8 +24,7 @@ const EditProductForm = ({route, navigation}) => {
     }
 
     try {
-      await updateProduct(productId, nome, valor);
-      Alert.alert('Produto atualizado com sucesso!');
+      await updateProduct(productId, nome, parseFloat(valor));
       navigation.goBack();
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível atualizar o produto.');

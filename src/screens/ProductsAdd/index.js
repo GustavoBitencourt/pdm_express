@@ -20,7 +20,6 @@ const AddProductForm = ({navigation}) => {
   const handleAddProduct = async () => {
     try {
       await addProduct(nome, valor);
-      Alert.alert('Produto adicionado com sucesso!');
       setNome('');
       setValor('');
       navigation.goBack();
