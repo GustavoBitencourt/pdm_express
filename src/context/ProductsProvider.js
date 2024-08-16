@@ -1,6 +1,8 @@
 import React, {createContext, useState, useContext} from 'react';
 import {ToastAndroid} from 'react-native';
 import {ApiContext} from './ApiProvider';
+import storage from '@react-native-firebase/storage';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 export const ProductsContext = createContext({});
 
@@ -25,6 +27,7 @@ export const ProductsProvider = ({children}) => {
           id: k,
           Nome: d.fields.Nome.stringValue,
           Valor: d.fields.Valor.doubleValue,
+          urlFoto: d.fields.urlFoto?.stringValue || '',
         });
       });
       data.sort((a, b) => a.Nome.localeCompare(b.Nome));
@@ -35,12 +38,21 @@ export const ProductsProvider = ({children}) => {
     }
   };
 
-  const addProduct = async (nome, valor) => {
+  const addProduct = async (nome, valor, urlDevice) => {
     try {
+      let urlFoto = '';
+      if (urlDevice) {
+        urlFoto = await sendImageToStorage(urlDevice, nome);
+        if (!urlFoto) {
+          throw new Error('Failed to upload image');
+        }
+      }
+
       await api.post('/Produtos/', {
         fields: {
           Nome: {stringValue: nome},
           Valor: {doubleValue: valor},
+          urlFoto: {stringValue: urlFoto},
         },
       });
       showToast('Produto adicionado com sucesso.');
@@ -51,12 +63,21 @@ export const ProductsProvider = ({children}) => {
     }
   };
 
-  const updateProduct = async (id, nome, valor) => {
+  const updateProduct = async (id, nome, valor, urlDevice) => {
     try {
+      let urlFoto = '';
+      if (urlDevice) {
+        urlFoto = await sendImageToStorage(urlDevice, nome);
+        if (!urlFoto) {
+          throw new Error('Failed to upload image');
+        }
+      }
+
       await api.patch(`/Produtos/${id}`, {
         fields: {
           Nome: {stringValue: nome},
           Valor: {doubleValue: valor},
+          urlFoto: {stringValue: urlFoto},
         },
       });
       showToast('Produto atualizado com sucesso.');
@@ -75,6 +96,40 @@ export const ProductsProvider = ({children}) => {
     } catch (response) {
       console.error('Error in removeProduct:', response);
       throw new Error('Failed to remove product');
+    }
+  };
+
+  const sendImageToStorage = async (urlDevice, nomeProduto) => {
+    try {
+      let imageRedimensionada = await ImageResizer.createResizedImage(
+        urlDevice,
+        150,
+        200,
+        'PNG',
+        80,
+      );
+
+      const pathToStorage = `images/produtos/${nomeProduto}/foto.png`;
+
+      let url = '';
+      const task = storage()
+        .ref(pathToStorage)
+        .putFile(imageRedimensionada.uri);
+      task.on('state_changed', taskSnapshot => {});
+
+      await task.then(async () => {
+        url = await storage().ref(pathToStorage).getDownloadURL();
+      });
+
+      task.catch(e => {
+        console.error('ProductsProvider, sendImageToStorage: ' + e);
+        url = null;
+      });
+
+      return url;
+    } catch (e) {
+      console.error('ProductsProvider, sendImageToStorage: ' + e);
+      return null;
     }
   };
 

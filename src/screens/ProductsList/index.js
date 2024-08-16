@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
+  Image,
 } from 'react-native';
 import {ProductsContext} from '../../context/ProductsProvider';
 import Loading from '../../components/Loading';
@@ -31,6 +32,13 @@ const ProductsList = ({navigation}) => {
     }
   };
 
+  const formatPrice = value => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    }).format(value);
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {loading ? (
@@ -42,7 +50,16 @@ const ProductsList = ({navigation}) => {
           {products.map((product, index) => (
             <View key={index} style={styles.productContainer}>
               <Text style={styles.productName}>{product.Nome}</Text>
-              <Text style={styles.productPrice}>R$ {product.Valor}</Text>
+              {product.urlFoto && (
+                <Image
+                  source={{uri: product.urlFoto}}
+                  style={styles.productImage}
+                  resizeMode="contain"
+                />
+              )}
+              <Text style={styles.productPrice}>
+                {formatPrice(product.Valor)}
+              </Text>
               <View style={styles.actions}>
                 <TouchableOpacity
                   onPress={() =>
@@ -96,15 +113,21 @@ const styles = StyleSheet.create({
     color: `${COLORS.primaryDark}`,
     textAlign: 'center',
   },
+  productImage: {
+    width: 100,
+    height: 100,
+    marginVertical: 10,
+  },
   productPrice: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
     color: `${COLORS.blackGray}`,
     textAlign: 'center',
   },
   actions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
+    width: '80%',
     marginTop: 10,
   },
 });
